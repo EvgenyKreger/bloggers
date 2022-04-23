@@ -362,6 +362,18 @@ app.put('/posts/:id', (req: Request, res: Response) => {
         needPost.content = req.body.content
         res.send(204)
     }
+    if (!needPost) {
+        res.status(404).send({
+            "data": {},
+            "errorsMessages": [
+                {
+                    "message": "post not found",
+                    "field": "bloggerId"
+                }
+            ],
+            "resultCode": 1
+        })
+    }
     if (Object.keys(req.body).length === 0){
         res.send(400)
     }
@@ -380,18 +392,7 @@ app.put('/posts/:id', (req: Request, res: Response) => {
             "resultCode": 1
         })
     }
-    if (!needPost) {
-        res.status(404).send({
-            "data": {},
-            "errorsMessages": [
-                {
-                    "message": "post not found",
-                    "field": "bloggerId"
-                }
-            ],
-            "resultCode": 1
-        })
-    }
+
     if (!checked) {
         res.status(400).send({
             "data": {},
