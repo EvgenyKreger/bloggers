@@ -76,6 +76,15 @@ app.post('/bloggers', (req: Request, res: Response) => {
             "resultCode": 1
         })
     }
+    if (!check) {
+        res.status(400).send({
+            "data": {},
+            "errorsMessages": [{
+                "message": "Youtube url is not correct",
+            }],
+            "resultCode": 1
+        })
+    }
 
     if (!check && !req.body.youtubeUrl.trim() || req.body.youtubeUrl.trim().length > 100 || !req.body.name.trim()
         || req.body.name.trim().length > 15) {
@@ -353,6 +362,9 @@ app.put('/posts/:id', (req: Request, res: Response) => {
     if (Object.keys(req.body).length === 0){
         res.send(400)
     }
+    if (Object.keys(req.body.bloggerId).length === 0){
+        res.send(400)
+    }
     if (!needBlogger) {
         res.status(400).send({
             "data": {},
@@ -366,7 +378,7 @@ app.put('/posts/:id', (req: Request, res: Response) => {
         })
     }
     if (!needPost) {
-        res.status(400).send({
+        res.status(404).send({
             "data": {},
             "errorsMessages": [
                 {
@@ -397,7 +409,7 @@ app.put('/posts/:id', (req: Request, res: Response) => {
             "field": "shortDescription" }`) : ''
         !req.body.content.trim() ? all.push(`{ "message": "The Content field is required.",
             "field": "content"}`) : ''
-        req.body.title.trim().length > 30 ? all.push(`{"message": "The field Title must be a string or array type 
+        req.body.trim().length > 30 ? all.push(`{"message": "The field Title must be a string or array type 
         with a maximum length of '30'.",
             "field": "title" }`) : ''
         req.body.shortDescription.trim().length > 100 ? all.push(`{"message": "The ShortDescription Title must be a string or array type 
