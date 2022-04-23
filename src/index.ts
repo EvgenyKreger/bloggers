@@ -142,6 +142,9 @@ app.put('/bloggers/:id', (req: Request, res: Response) => {
         needBlogger.name = req.body.youtubeUrl
         res.status(204)
     }
+    if (Object.keys(req.body).length === 0){
+        res.send(400)
+    }
     if (!needBlogger) {
         res.status(404).send({
             "type": "https://tools.ietf.org/html/rfc7231#section-6.5.4",
@@ -366,7 +369,7 @@ app.put('/posts/:id', (req: Request, res: Response) => {
         res.send(400)
     }
     if (!needBlogger) {
-        res.status(400).send({
+        res.status(404).send({
             "data": {},
             "errorsMessages": [
                 {
