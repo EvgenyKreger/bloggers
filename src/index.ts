@@ -136,15 +136,15 @@ app.put('/bloggers/:id', (req: Request, res: Response) => {
     const needBlogger = bloggers.find((el) => el.id === needId)
     const regex = new RegExp('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$');
     const check = regex.test(req.body.youtubeUrl)
-
-    if (needBlogger && req.body.name.trim() && check) {
-        needBlogger.name = req.body.name
-        needBlogger.name = req.body.youtubeUrl
-        res.status(204)
-    }
     if (Object.keys(req.body).length === 0){
         res.send(400)
     }
+    if (needBlogger && req.body.name.trim() && check) {
+        needBlogger.name = req.body.name
+        needBlogger.youtubeUrl = req.body.youtubeUrl
+        res.send(204)
+    }
+
     if (!needBlogger) {
         res.status(404).send({
             "type": "https://tools.ietf.org/html/rfc7231#section-6.5.4",
