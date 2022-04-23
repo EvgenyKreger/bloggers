@@ -64,6 +64,9 @@ app.post('/bloggers', (req: Request, res: Response) => {
         bloggers.push(newBlogger)
         res.status(201).send(newBlogger)
     }
+    if (Object.keys(req.body).length === 0){
+        res.send(400)
+    }
     if (!isString) {
         res.status(400).send({
             "data": {},
@@ -260,8 +263,11 @@ app.post('/posts', (req: Request, res: Response) => {
         posts.push(newPost)
         res.status(201).send(newPost)
     }
+    if (Object.keys(req.body).length === 0){
+        res.send(400)
+    }
     if (!needBloggerById) {
-        res.status(404).send({
+        res.status(400).send({
             "data": {},
             "errorsMessages": [
                 {
@@ -344,12 +350,27 @@ app.put('/posts/:id', (req: Request, res: Response) => {
         needPost.content = req.body.content
         res.send(204)
     }
+    if (Object.keys(req.body).length === 0){
+        res.send(400)
+    }
     if (!needBlogger) {
-        res.status(404).send({
+        res.status(400).send({
             "data": {},
             "errorsMessages": [
                 {
                     "message": "Invalid 'bloggerId': such blogger doesn't exist",
+                    "field": "bloggerId"
+                }
+            ],
+            "resultCode": 1
+        })
+    }
+    if (!needPost) {
+        res.status(400).send({
+            "data": {},
+            "errorsMessages": [
+                {
+                    "message": "post not found",
                     "field": "bloggerId"
                 }
             ],
