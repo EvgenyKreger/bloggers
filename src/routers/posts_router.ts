@@ -1,18 +1,19 @@
 import {Request, Response, Router} from "express";
-import {postsRepository} from "../repositories/posts_repository";
+import {postsRepository, PostsType} from "../repositories/posts_repository";
 import {postsPostValidationMiddleware} from "../middlewares/postsPostValidationMidleware";
+import {postsPutValidationMiddleware} from "../middlewares/postsPutValidationMidleware";
 export const postsRouter = Router({})
 
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    const posts = postsRepository.getAllPosts()
+postsRouter.get('/', async (req: Request, res: Response) => {
+    const posts : PostsType[] = await postsRepository.getAllPosts()
     if (posts)
         res.status(200).send(posts)
 
 })
 
-postsRouter.post('/', postsPostValidationMiddleware, (req: Request, res: Response) => {
-    const createNewPost = postsRepository.createPosts(+req.body.bloggerId, req.body.title, req.body.shortDescription, req.body.content)
+postsRouter.post('/',postsPostValidationMiddleware, async (req: Request, res: Response) => {
+    const createNewPost : PostsType | boolean = await postsRepository.createPosts(+req.body.bloggerId, req.body.title, req.body.shortDescription, req.body.content)
     if (createNewPost) {
         res.status(201).send(createNewPost)
     } else {
@@ -48,7 +49,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-postsRouter.put('/:id', postsPostValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.put('/:id', postsPutValidationMiddleware, (req: Request, res: Response) => {
 
     const updateNeedPost: Boolean = postsRepository.updatePost(+req.params.id, req.body.bloggerId, req.body.title,
         req.body.shortDescription, req.body.content)

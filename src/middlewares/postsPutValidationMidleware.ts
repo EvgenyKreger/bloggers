@@ -3,7 +3,7 @@
 import {NextFunction, Request, Response} from "express";
 
 
-export const postsPostValidationMiddleware = (req:Request, res:Response, next:NextFunction)=>{
+export const postsPutValidationMiddleware = (req:Request, res:Response, next:NextFunction)=>{
     const checked = (typeof (req.body.title) !== typeof (5)) && (typeof (req.body.shortDescription) !== typeof (5))
         && (typeof (req.body.content) !== typeof (5))
     if (Object.keys(req.body).length === 0) {

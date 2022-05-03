@@ -2,16 +2,12 @@ import {NextFunction,Request,Response} from "express";
 
 
 
+
 export const bloggerPostValidationMiddleware = (req:Request, res:Response, next:NextFunction)=>{
+
     const regex = new RegExp('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$');
     const check = regex.test(req.body.youtubeUrl)
     const isString = (typeof (req.body.name) !== typeof (5)) && (typeof (req.body.youtubeUrl) !== typeof (5))
-
-    // if (check && isString && newBlogger.name && req.body.name.trim().length > 0 && req.body.name.trim().length < 15
-    //     && req.body.youtubeUrl.trim().length > 0 && req.body.youtubeUrl.trim().length < 100 && isString) {
-    //     bloggers.push(newBlogger)
-    //     res.status(201).send(newBlogger)
-    // }
     if (!check) {
         res.status(400).send({
             "data": {},

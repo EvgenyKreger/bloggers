@@ -27,18 +27,7 @@ export const postsPostValidationMiddleware = (req:Request, res:Response, next:Ne
         res.send(400)
         return
     }
-    // if (!needBloggerById) {
-    //     res.status(400).send({
-    //         "data": {},
-    //         "errorsMessages": [
-    //             {
-    //                 "message": "Invalid 'bloggerId': such blogger doesn't exist",
-    //                 "field": "bloggerId"
-    //             }
-    //         ],
-    //         "resultCode": 1
-    //     })
-    // }
+
     if (!check) {
         res.status(400).send({
             "data": {},

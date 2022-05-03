@@ -4,6 +4,7 @@ import {bloggerPostValidationMiddleware} from "../middlewares/bloggerPostValidat
 import {bloggerPutValidationMiddleware} from "../middlewares/bloggerPutValidationMiddleware";
 
 
+
 export const bloggersRouter = Router({})
 
 
@@ -16,7 +17,7 @@ bloggersRouter.get('/', (req: Request, res: Response) => {
     }
 })
 
-bloggersRouter.post('/', bloggerPostValidationMiddleware,(req: Request, res: Response) => {
+bloggersRouter.post('/',bloggerPostValidationMiddleware,(req: Request, res: Response) => {
 const createBlogger = bloggersRepository.createNewBlogger(req.body.name, req.body.youtubeUrl)
     if(createBlogger){
         res.status(204).send(createBlogger)
