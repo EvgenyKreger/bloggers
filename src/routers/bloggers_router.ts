@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {bloggersRepository} from "../repositories/bloggers_repository";
+import {bloggersRepository, BloggerType} from "../repositories/bloggers_db_repository";
 import {bloggerPostValidationMiddleware} from "../middlewares/bloggerPostValidationMiddleware";
 import {bloggerPutValidationMiddleware} from "../middlewares/bloggerPutValidationMiddleware";
 
@@ -8,24 +8,24 @@ import {bloggerPutValidationMiddleware} from "../middlewares/bloggerPutValidatio
 export const bloggersRouter = Router({})
 
 
-bloggersRouter.get('/', (req: Request, res: Response) => {
-    const getBloggers = bloggersRepository.getAllBloggers()
+bloggersRouter.get('/', async (req: Request, res: Response) => {
+    const getBloggers : BloggerType[] = await bloggersRepository.getAllBloggers()
     if (getBloggers)
         res.status(200).send(getBloggers)
-    else{
+    else {
         res.send(404)
     }
 })
 
-bloggersRouter.post('/',bloggerPostValidationMiddleware,(req: Request, res: Response) => {
-const createBlogger = bloggersRepository.createNewBlogger(req.body.name, req.body.youtubeUrl)
-    if(createBlogger){
+bloggersRouter.post('/',bloggerPostValidationMiddleware,async (req: Request, res: Response) => {
+    const createBlogger : BloggerType = await bloggersRepository.createNewBlogger(req.body.name, req.body.youtubeUrl)
+    if (createBlogger) {
         res.status(204).send(createBlogger)
     }
 })
 
-bloggersRouter.get('/:id', (req: Request, res: Response) => {
-    const newBloggers = bloggersRepository.getBloggerById(+req.params.id)
+bloggersRouter.get('/:id', async (req: Request, res: Response) => {
+    const newBloggers : BloggerType | boolean = await bloggersRepository.getBloggerById(+req.params.id)
     if (newBloggers) {
         res.status(200).send(newBloggers)
     } else {
@@ -33,24 +33,23 @@ bloggersRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-bloggersRouter.put('/:id', bloggerPutValidationMiddleware,(req: Request, res: Response) => {
+bloggersRouter.put('/:id', bloggerPutValidationMiddleware,async (req: Request, res: Response) => {
 
-    const needBlogger:Boolean = bloggersRepository.updateBlogger(+req.params.id, req.body.name, req.body.youtubeUrl)
-      if(needBlogger){
-          res.send(204)
-      }else{
-          res.send(404)
-      }
+    const needBlogger: boolean = await bloggersRepository.updateBlogger(+req.params.id, req.body.name, req.body.youtubeUrl)
+    if (needBlogger) {
+        res.send(204)
+    } else {
+        res.send(404)
+    }
 
 
 })
 
-bloggersRouter.delete('/:id', (req: Request, res: Response) => {
-    const needBlogger:Boolean = bloggersRepository.removeBlogger(+req.params.id)
+bloggersRouter.delete('/:id', async (req: Request, res: Response) => {
+    const needBlogger: Boolean = await bloggersRepository.removeBlogger(+req.params.id)
     if (needBlogger) {
         res.send(204)
-    }
-  else {
+    } else {
         res.send(404)
     }
 

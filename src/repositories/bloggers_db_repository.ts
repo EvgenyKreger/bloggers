@@ -1,3 +1,5 @@
+import {client} from "./db";
+
 export type BloggerType = {
     id: number
     name: string
@@ -9,43 +11,42 @@ export let bloggers: Array<BloggerType> = [
 ]
 
 export const bloggersRepository = {
-    getAllBloggers() {
-       return bloggers
+   async getAllBloggers() :Promise<BloggerType[]> {
+       return client.db("learnDB").collection<BloggerType>("bloggers").find().toArray()
     },
-    createNewBlogger(name:string,youtubeUrl:string){
+
+
+   async createNewBlogger(name:string,youtubeUrl:string):Promise<BloggerType>{
         const newBlogger = {
             id: +(new Date()),
             name: name,
             youtubeUrl: youtubeUrl
         }
-        bloggers.push(newBlogger)
+       await client.db("learnDB").collection<BloggerType>("bloggers").insertOne(newBlogger)
         return newBlogger
     },
-    getBloggerById(id:number){
-     const findNeedBlogger = bloggers.find(el => el.id === id)
+
+
+   async getBloggerById(id:number):Promise<BloggerType | boolean>{
+   const findNeedBlogger = await client.db("learnDB").collection<BloggerType>("bloggers").findOne({id:id})
         if(findNeedBlogger){
             return findNeedBlogger
         }else{
             return false
         }
     },
-    updateBlogger(id:number, name:string,youtubeUrl:string) {
-        const bloggerFindById = bloggers.find((el) => el.id === id)
-        if (bloggerFindById) {
-            bloggerFindById.name = name
-            bloggerFindById.youtubeUrl = youtubeUrl
-            return true
-        }else{
-            return false
-        }
+
+
+    async updateBlogger(id: number, name: string, youtubeUrl: string):Promise<boolean>  {
+        const bloggerFindById = await client.db("learnDB").collection<BloggerType>("bloggers")
+            .updateOne({id: id},{$set :{name : name, youtubeUrl : youtubeUrl }})
+            return bloggerFindById.matchedCount === 1
+
     },
-    removeBlogger(id:number){
-        const needBlogger = bloggers.find((el) => el.id === id)
-        if (needBlogger) {
-            bloggers = bloggers.filter((el) => el.id !== id)
-            return true
-        }else{
-            return false
-        }
+
+
+   async removeBlogger(id:number):Promise<boolean>{
+        const result = await client.db("learnDB").collection<BloggerType>("bloggers").deleteOne({id:id})
+            return result.deletedCount === 1
     }
 }
